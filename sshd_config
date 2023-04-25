@@ -1,0 +1,6 @@
+Port            22
+ListenAddress       0.0.0.0
+PasswordAuthentication  yes
+PermitEmptyPasswords    no
+PermitRootLogin     yes
+Subsystem sftp internal-sftp

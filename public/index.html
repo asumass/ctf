@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="/public/app.css">
+</head>
+
+<body>
+  <main id="main-holder">
+    <h1 id="login-header">Welcome to the SDaT CTF. Login to continue.</h1>
+  
+    
+    <form id="login-form">
+      <input type="text" name="username" id="username-field" class="login-form-field" placeholder="Username">
+      <input type="password" name="password" id="password-field" class="login-form-field" placeholder="Password">
+      <input type="submit" value="Login" id="login-form-submit">
+    </form>
+  
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+    const form = document.querySelector('form');
+    const message = document.querySelector('#message');
+
+    counter = 0
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const username = form.elements.username.value;
+      const password = form.elements.password.value;
+
+      usernamehash = CryptoJS.SHA256(username).toString(CryptoJS.enc.Hex)
+
+      fetch('/userssha256').then(res => {
+        res.json().then((users)=>{
+          user_names = new Set(users.map(user => user.name))
+          if (user_names.has(usernamehash)){
+            document.getElementById("login-header").innerText = "Clever! got a username. Crack passwords to proceed!"
+            fetch('/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ username, password })
+            }).then(res=>{
+              if(res.ok){
+                alert("Congratulations! Login Successful")
+                document.getElementById("login-header").innerText = "Nicely done! Now Check what other ports are open and try to using the found credentials."
+                document.querySelector('form').remove()
+              }
+              else{
+                alert("Incorrect Password!!")
+              }
+            })
+          }
+          else{
+            alert("User not found!!");
+            counter=counter+1
+            if(counter>=3)
+            alert("You cant keep trying random usernames. Put your browser debugging into action !!! ")
+          }
+        })
+      })
+    });
+  </script>
+
+</body>
+
+</html>

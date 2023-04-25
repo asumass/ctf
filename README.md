@@ -1,4 +1,4 @@
-# Dig out the flag!
+# Dig up!
 
 This CTF is designed to put your debugging, hashing and password cracking skills into action. Find the hidden flag if you can !!
 
